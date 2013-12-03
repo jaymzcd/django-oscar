@@ -890,6 +890,12 @@ class AbstractProductAttributeValue(models.Model):
         verbose_name = _('Product Attribute Value')
         verbose_name_plural = _('Product Attribute Values')
 
+        # An attribute combined with a particular product should only occur
+        # once in the table. Otherwise you can accidently insert several copies
+        # when the dashboard is rendering forms resulting in MultipleObjectsReturned
+        # exceptions. Enforce consistency at the db level to begin with.
+        unique_together = ('attribute', 'product')
+
     def __unicode__(self):
         return u"%s: %s" % (self.attribute.name, self.value)
 
